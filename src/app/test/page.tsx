@@ -4,6 +4,7 @@
  */
 
 import { createClient } from '@/lib/supabase/server'
+import type { RecommendationRow } from '@/lib/supabase/types'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -13,8 +14,8 @@ export default async function TestPage() {
 
   // Supabase 연결 테스트
   let connectionStatus = '연결 실패'
-  let recommendations = []
-  let error = null
+  let recommendations: RecommendationRow[] = []
+  let error: string | null = null
 
   try {
     const { data, error: fetchError } = await supabase
@@ -90,7 +91,7 @@ export default async function TestPage() {
           <p className="text-gray-500">데이터가 없습니다.</p>
         ) : (
           <div className="space-y-2">
-            {recommendations.map((rec: any) => (
+            {recommendations.map((rec) => (
               <div key={rec.id} className="p-3 bg-gray-50 rounded">
                 <div className="flex justify-between items-start">
                   <div>
@@ -105,18 +106,20 @@ export default async function TestPage() {
                     <p className="font-medium">
                       {rec.current_price?.toLocaleString()}원
                     </p>
-                    <p
-                      className={`text-sm ${
-                        rec.change_rate > 0
-                          ? 'text-red-600'
-                          : rec.change_rate < 0
-                          ? 'text-blue-600'
-                          : ''
-                      }`}
-                    >
-                      {rec.change_rate > 0 ? '+' : ''}
-                      {rec.change_rate}%
-                    </p>
+                    {rec.change_rate !== null && (
+                      <p
+                        className={`text-sm ${
+                          rec.change_rate > 0
+                            ? 'text-red-600'
+                            : rec.change_rate < 0
+                            ? 'text-blue-600'
+                            : ''
+                        }`}
+                      >
+                        {rec.change_rate > 0 ? '+' : ''}
+                        {rec.change_rate}%
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
