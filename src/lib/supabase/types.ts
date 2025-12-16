@@ -49,7 +49,7 @@ export interface Database {
           cancelled_reason?: string | null
         }
         Update: {
-          id?: never
+          id?: number
           recommendation_time?: string
           stock_code?: string
           stock_name?: string

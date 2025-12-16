@@ -5,11 +5,16 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
+import type { RecommendationUpdate } from '@/lib/supabase/types'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { id, password, reason } = body
+    const { id, password, reason } = body as {
+      id: number
+      password: string
+      reason?: string
+    }
 
     // 필수 파라미터 검증
     if (!id || !password) {
@@ -30,16 +35,19 @@ export async function POST(request: NextRequest) {
     // Service Role 클라이언트로 업데이트 (RLS 우회)
     const supabase = createServiceClient()
 
-    const { data, error } = await supabase
+    const updateData: RecommendationUpdate = {
+      is_active: false,
+      cancelled_at: new Date().toISOString(),
+      cancelled_reason: reason ?? null,
+    }
+
+    const { data, error } = await ((supabase as any)
       .from('recommendations')
-      .update({
-        is_active: false,
-        cancelled_at: new Date().toISOString(),
-        cancelled_reason: reason || null,
-      })
+      .update(updateData)
       .eq('id', id)
       .eq('is_active', true) // 이미 취소된 것은 다시 취소 불가
-      .select()
+      .select())
+      
 
     if (error) {
       console.error('Failed to cancel recommendation:', error)
