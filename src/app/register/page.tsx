@@ -6,9 +6,8 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 
 interface ReferralSource {
-  id: number
+  code: string
   name: string
-  is_active: boolean
 }
 
 export default function RegisterPage() {
@@ -23,7 +22,7 @@ export default function RegisterPage() {
     gender: '',
     birth_year: '',
     referrer_id: '',
-    referral_source_id: ''
+    referral_source: ''
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -129,8 +128,8 @@ export default function RegisterPage() {
     }
 
     // 유입경로 검증
-    if (!formData.referral_source_id) {
-      newErrors.referral_source_id = '유입경로를 선택해주세요.'
+    if (!formData.referral_source) {
+      newErrors.referral_source = '유입경로를 선택해주세요.'
     }
 
     setErrors(newErrors)
@@ -157,7 +156,7 @@ export default function RegisterPage() {
           gender: formData.gender,
           birth_year: parseInt(formData.birth_year),
           referrer_id: formData.referrer_id || undefined,
-          referral_source_id: parseInt(formData.referral_source_id)
+          referral_source: formData.referral_source
         })
       })
 
@@ -404,30 +403,30 @@ export default function RegisterPage() {
 
             {/* 유입경로 */}
             <div>
-              <label htmlFor="referral_source_id" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="referral_source" className="block text-sm font-medium text-gray-700">
                 유입경로 <span className="text-red-500">*</span>
               </label>
               <div className="mt-1">
                 <select
-                  id="referral_source_id"
-                  name="referral_source_id"
+                  id="referral_source"
+                  name="referral_source"
                   required
-                  value={formData.referral_source_id}
+                  value={formData.referral_source}
                   onChange={handleChange}
                   className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                    errors.referral_source_id ? 'border-red-300' : 'border-gray-300'
+                    errors.referral_source ? 'border-red-300' : 'border-gray-300'
                   }`}
                 >
                   <option value="">선택하세요</option>
                   {referralSources.map(source => (
-                    <option key={source.id} value={source.id}>
+                    <option key={source.code} value={source.code}>
                       {source.name}
                     </option>
                   ))}
                 </select>
               </div>
-              {errors.referral_source_id && (
-                <p className="mt-1 text-sm text-red-600">{errors.referral_source_id}</p>
+              {errors.referral_source && (
+                <p className="mt-1 text-sm text-red-600">{errors.referral_source}</p>
               )}
             </div>
 
