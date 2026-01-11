@@ -5,6 +5,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import RecommendationList from '@/components/RecommendationList'
+import Header from '@/components/Header'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -26,8 +27,11 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* 헤더 */}
+      <Header />
+
       <div className="container mx-auto py-8 px-4">
-        {/* 헤더 */}
+        {/* 페이지 타이틀 */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             실시간 종목 추천
