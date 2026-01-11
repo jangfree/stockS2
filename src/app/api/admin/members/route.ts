@@ -39,9 +39,9 @@ export async function GET(request: NextRequest) {
       .from('members')
       .select(`
         id, user_id, name, gender, birth_year,
-        membership_level, membership_expires_at,
-        status, security_status,
-        referrer_id, referral_source_id,
+        membership_level, membership_start_date, membership_end_date,
+        is_active, security_status,
+        referrer_id, referral_source,
         created_at, updated_at,
         referral_sources (name)
       `, { count: 'exact' })
@@ -51,9 +51,11 @@ export async function GET(request: NextRequest) {
       query = query.or(`user_id.ilike.%${search}%,name.ilike.%${search}%`)
     }
 
-    // 상태 필터
-    if (status) {
-      query = query.eq('status', status)
+    // 상태 필터 (is_active 기반)
+    if (status === 'active') {
+      query = query.eq('is_active', true)
+    } else if (status === 'inactive') {
+      query = query.eq('is_active', false)
     }
 
     // 등급 필터
