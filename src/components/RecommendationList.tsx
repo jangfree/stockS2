@@ -25,31 +25,54 @@ export default function RecommendationList({ initialData }: Props) {
     // Realtime 구독 설정
     const channel = supabase
       .channel('recommendations_changes')
+      // INSERT 이벤트: 새 추천 추가 (is_active=true인 것만)
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
           schema: 'public',
           table: 'recommendations',
           filter: 'is_active=eq.true',
         },
         (payload) => {
-          console.log('Realtime event:', payload)
+          console.log('Realtime INSERT:', payload)
+          setRecommendations((prev) => [payload.new as RecommendationRow, ...prev])
+        }
+      )
+      // UPDATE 이벤트: 취소 처리 감지 (필터 없이 모든 UPDATE 감지)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'recommendations',
+        },
+        (payload) => {
+          console.log('Realtime UPDATE:', payload)
+          const updated = payload.new as RecommendationRow
 
-          if (payload.eventType === 'INSERT') {
-            // 새 추천 추가
-            setRecommendations((prev) => [payload.new as RecommendationRow, ...prev])
-          } else if (payload.eventType === 'UPDATE') {
-            // 추천 업데이트
+          if (!updated.is_active) {
+            // is_active가 false가 되면 목록에서 제거 (취소됨)
+            setRecommendations((prev) => prev.filter((rec) => rec.id !== updated.id))
+          } else {
+            // 그 외 업데이트는 데이터 갱신
             setRecommendations((prev) =>
-              prev.map((rec) =>
-                rec.id === payload.new.id ? (payload.new as RecommendationRow) : rec
-              )
+              prev.map((rec) => (rec.id === updated.id ? updated : rec))
             )
-          } else if (payload.eventType === 'DELETE') {
-            // 추천 삭제 (취소)
-            setRecommendations((prev) => prev.filter((rec) => rec.id !== payload.old.id))
           }
+        }
+      )
+      // DELETE 이벤트: 물리적 삭제 처리
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'recommendations',
+        },
+        (payload) => {
+          console.log('Realtime DELETE:', payload)
+          setRecommendations((prev) => prev.filter((rec) => rec.id !== payload.old.id))
         }
       )
       .subscribe((status) => {
@@ -93,7 +116,14 @@ export default function RecommendationList({ initialData }: Props) {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {recommendations.map((rec) => (
-            <RecommendationCard key={rec.id} recommendation={rec} />
+            <RecommendationCard
+              key={rec.id}
+              recommendation={rec}
+              onCancelSuccess={(cancelledId) => {
+                // 취소 성공 시 로컬 상태에서 즉시 제거 (Realtime보다 빠른 UX)
+                setRecommendations((prev) => prev.filter((r) => r.id !== cancelledId))
+              }}
+            />
           ))}
         </div>
       )}
@@ -104,7 +134,13 @@ export default function RecommendationList({ initialData }: Props) {
 /**
  * 개별 추천 카드 컴포넌트
  */
-function RecommendationCard({ recommendation: rec }: { recommendation: RecommendationRow }) {
+function RecommendationCard({
+  recommendation: rec,
+  onCancelSuccess,
+}: {
+  recommendation: RecommendationRow
+  onCancelSuccess: (cancelledId: number) => void
+}) {
   const priceChangeColor = getPriceChangeColor(rec.change_rate || 0)
   const [showCancelModal, setShowCancelModal] = useState(false)
 
@@ -200,9 +236,7 @@ function RecommendationCard({ recommendation: rec }: { recommendation: Recommend
         <CancelModal
           recommendation={rec}
           onClose={() => setShowCancelModal(false)}
-          onSuccess={() => {
-            // 성공 시 Realtime으로 자동 업데이트되므로 별도 처리 불필요
-          }}
+          onSuccess={onCancelSuccess}
         />
       )}
     </>

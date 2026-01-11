@@ -10,7 +10,7 @@ import { RecommendationRow } from '@/lib/supabase/types'
 interface Props {
   recommendation: RecommendationRow
   onClose: () => void
-  onSuccess: () => void
+  onSuccess: (cancelledId: number) => void
 }
 
 export default function CancelModal({ recommendation, onClose, onSuccess }: Props) {
@@ -43,7 +43,7 @@ export default function CancelModal({ recommendation, onClose, onSuccess }: Prop
         throw new Error(data.error || '취소에 실패했습니다')
       }
 
-      onSuccess()
+      onSuccess(recommendation.id)
       onClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : '오류가 발생했습니다')
