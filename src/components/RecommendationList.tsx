@@ -15,6 +15,23 @@ interface Props {
   initialData: RecommendationRow[]
 }
 
+// 오늘 날짜인지 확인 (한국 시간 기준)
+function isTodayKST(dateString: string | null): boolean {
+  if (!dateString) return false
+
+  const date = new Date(dateString)
+  const now = new Date()
+
+  // 한국 시간으로 변환
+  const kstOffset = 9 * 60 * 60 * 1000
+  const kstDate = new Date(date.getTime() + kstOffset)
+  const kstNow = new Date(now.getTime() + kstOffset)
+
+  return kstDate.getFullYear() === kstNow.getFullYear() &&
+         kstDate.getMonth() === kstNow.getMonth() &&
+         kstDate.getDate() === kstNow.getDate()
+}
+
 export default function RecommendationList({ initialData }: Props) {
   const [recommendations, setRecommendations] = useState<RecommendationRow[]>(initialData)
   const [isConnected, setIsConnected] = useState(false)
@@ -36,7 +53,11 @@ export default function RecommendationList({ initialData }: Props) {
         },
         (payload) => {
           console.log('Realtime INSERT:', payload)
-          setRecommendations((prev) => [payload.new as RecommendationRow, ...prev])
+          const newRec = payload.new as RecommendationRow
+          // 오늘 추천된 종목만 추가
+          if (isTodayKST(newRec.recommendation_time)) {
+            setRecommendations((prev) => [newRec, ...prev])
+          }
         }
       )
       // UPDATE 이벤트: 취소 처리 감지 (필터 없이 모든 UPDATE 감지)
