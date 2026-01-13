@@ -199,7 +199,7 @@ function RecommendationCard({
 
         {/* 종목 클릭 시간 */}
         <div className="pt-4 border-t border-gray-200">
-          <p className="text-xs text-gray-400">
+          <p className="text-sm font-medium text-gray-700">
             {formatDateTime(rec.recommendation_time)}
           </p>
         </div>
