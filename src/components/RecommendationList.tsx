@@ -173,45 +173,19 @@ function RecommendationCard({
           <p className="text-sm text-gray-500">{rec.stock_code}</p>
         </div>
 
-        {/* 가격 정보 */}
+        {/* 주식링크 */}
         <div className="mb-4">
-          <div className="flex items-end gap-2">
-            <span className="text-2xl font-bold text-gray-900">
-              {formatNumber(rec.current_price)}
-            </span>
-            <span className="text-sm text-gray-500">원</span>
-          </div>
-          {rec.change_rate !== null && rec.change_amount !== null && (
-            <div className={`flex items-center gap-2 mt-1 ${priceChangeColor}`}>
-              <span className="font-semibold">{formatRate(rec.change_rate)}</span>
-              <span className="text-sm">
-                ({rec.change_amount > 0 ? '+' : ''}
-                {formatNumber(rec.change_amount)})
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* 거래 정보 */}
-        <div className="space-y-2 mb-4 text-sm">
-          {rec.volume !== null && (
-            <div className="flex justify-between">
-              <span className="text-gray-500">거래량</span>
-              <span className="font-medium">{formatNumber(rec.volume)}</span>
-            </div>
-          )}
-          {rec.trading_value !== null && (
-            <div className="flex justify-between">
-              <span className="text-gray-500">거래대금</span>
-              <span className="font-medium">{formatNumber(Math.floor(rec.trading_value / 100000000))}억</span>
-            </div>
-          )}
-          {rec.volume_rank !== null && (
-            <div className="flex justify-between">
-              <span className="text-gray-500">거래량순위</span>
-              <span className="font-medium">{rec.volume_rank}위</span>
-            </div>
-          )}
+          <a
+            href={`https://finance.naver.com/item/main.naver?code=${rec.stock_code}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline font-medium"
+          >
+            주식링크
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
         </div>
 
         {/* 테마 */}
@@ -223,10 +197,10 @@ function RecommendationCard({
           </div>
         )}
 
-        {/* 추천 시간 */}
+        {/* 종목 클릭 시간 */}
         <div className="pt-4 border-t border-gray-200">
           <p className="text-xs text-gray-400">
-            {formatDateTime(rec.recommendation_time)}
+            클릭: {formatDateTime(rec.recommendation_time)}
           </p>
         </div>
       </div>
