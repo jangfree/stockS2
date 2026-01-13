@@ -181,7 +181,7 @@ function RecommendationCard({
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline font-medium"
           >
-            주식링크
+            네이버주식
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
@@ -200,7 +200,7 @@ function RecommendationCard({
         {/* 종목 클릭 시간 */}
         <div className="pt-4 border-t border-gray-200">
           <p className="text-xs text-gray-400">
-            클릭: {formatDateTime(rec.recommendation_time)}
+            {formatDateTime(rec.recommendation_time)}
           </p>
         </div>
       </div>
