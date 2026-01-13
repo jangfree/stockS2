@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * 날짜/시간 포맷팅
- * ISO 8601 형식 → "2025-12-15 15:28:40"
+ * ISO 8601 형식 → "2025-12-15 15:28:40" (한국 시간 KST 고정)
  */
 export function formatDateTime(isoString: string | null): string {
   if (!isoString) return '-'
@@ -22,12 +22,27 @@ export function formatDateTime(isoString: string | null): string {
       return '-'
     }
 
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    const seconds = String(date.getSeconds()).padStart(2, '0')
+    // 한국 시간대(KST, UTC+9)로 고정 표시
+    const kstFormatter = new Intl.DateTimeFormat('ko-KR', {
+      timeZone: 'Asia/Seoul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    })
+
+    const parts = kstFormatter.formatToParts(date)
+    const getPart = (type: string) => parts.find(p => p.type === type)?.value || ''
+
+    const year = getPart('year')
+    const month = getPart('month')
+    const day = getPart('day')
+    const hours = getPart('hour')
+    const minutes = getPart('minute')
+    const seconds = getPart('second')
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   } catch {
