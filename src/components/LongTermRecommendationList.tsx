@@ -224,37 +224,37 @@ function LongTermRecommendationCard({
 
         {/* 가격 정보 - 레벨 5만 표시 (현재가가 있는 경우만) */}
         {canDelete && rec.current_price !== null && rec.current_price > 0 && (
-          <div className="space-y-2 mb-4 text-sm border-b border-gray-100 pb-4">
-            <div className="flex justify-between">
-              <span className="text-gray-500">현재가</span>
-              <span className="font-medium text-gray-900">{formatNumber(rec.current_price)}원</span>
+          <div className="space-y-3 mb-4 text-sm bg-slate-50 rounded-lg p-3 border border-slate-200">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-700 font-medium">현재가</span>
+              <span className="font-bold text-lg text-gray-900">{formatNumber(rec.current_price)}원</span>
             </div>
             {rec.change_rate !== null && (
-              <div className="flex justify-between">
-                <span className="text-gray-500">등락률</span>
-                <span className={getPriceChangeColor(rec.change_rate)}>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700 font-medium">등락률</span>
+                <span className={`font-bold text-lg ${rec.change_rate > 0 ? 'text-red-600' : rec.change_rate < 0 ? 'text-blue-600' : 'text-gray-900'}`}>
                   {formatRate(rec.change_rate)}
                 </span>
               </div>
             )}
             {rec.change_amount !== null && rec.change_amount !== 0 && (
-              <div className="flex justify-between">
-                <span className="text-gray-500">전일대비</span>
-                <span className={getPriceChangeColor(rec.change_amount)}>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700 font-medium">전일대비</span>
+                <span className={`font-bold ${rec.change_amount > 0 ? 'text-red-600' : 'text-blue-600'}`}>
                   {formatNumber(rec.change_amount, true)}원
                 </span>
               </div>
             )}
             {rec.volume !== null && rec.volume > 0 && (
-              <div className="flex justify-between">
-                <span className="text-gray-500">거래량</span>
-                <span className="font-medium text-gray-900">{formatNumber(rec.volume)}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700 font-medium">거래량</span>
+                <span className="font-bold text-gray-900">{formatNumber(rec.volume)}</span>
               </div>
             )}
             {rec.trading_value !== null && rec.trading_value > 0 && (
-              <div className="flex justify-between">
-                <span className="text-gray-500">거래대금</span>
-                <span className="font-medium text-gray-900">{formatNumber(Math.floor(rec.trading_value / 100000000))}억</span>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700 font-medium">거래대금</span>
+                <span className="font-bold text-gray-900">{formatNumber(Math.floor(rec.trading_value / 100000000))}억</span>
               </div>
             )}
           </div>
@@ -262,25 +262,25 @@ function LongTermRecommendationCard({
 
         {/* 추천 정보 - 레벨 5만 표시 */}
         {canDelete && (
-          <div className="space-y-2 mb-4 text-sm">
+          <div className="space-y-3 mb-4 text-sm bg-blue-50 rounded-lg p-3 border border-blue-200">
             {rec.recommendation_strength !== null && (
-              <div className="flex justify-between">
-                <span className="text-gray-500">추천강도</span>
-                <span className="font-medium text-blue-600">{rec.recommendation_strength}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700 font-medium">추천강도</span>
+                <span className="font-bold text-lg text-blue-700">{rec.recommendation_strength}</span>
               </div>
             )}
             {rec.expected_return !== null && (
-              <div className="flex justify-between">
-                <span className="text-gray-500">예상수익률</span>
-                <span className={`font-medium ${rec.expected_return > 0 ? 'text-red-600' : 'text-blue-600'}`}>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700 font-medium">예상수익률</span>
+                <span className={`font-bold text-lg ${rec.expected_return > 0 ? 'text-red-600' : 'text-blue-600'}`}>
                   {rec.expected_return > 0 ? '+' : ''}{rec.expected_return}%
                 </span>
               </div>
             )}
             {rec.risk_level && (
               <div className="flex justify-between items-center">
-                <span className="text-gray-500">리스크</span>
-                <span className={`px-2 py-0.5 text-xs rounded-full ${getRiskColor(rec.risk_level)}`}>
+                <span className="text-gray-700 font-medium">리스크</span>
+                <span className={`px-3 py-1 text-sm font-bold rounded-full ${getRiskColor(rec.risk_level)}`}>
                   {getRiskLabel(rec.risk_level)}
                 </span>
               </div>
@@ -291,7 +291,8 @@ function LongTermRecommendationCard({
         {/* 주요 패턴 - 레벨 5만 표시 */}
         {canDelete && rec.main_pattern && (
           <div className="mb-4">
-            <span className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
+            <p className="text-xs text-gray-600 mb-1 font-medium">주요패턴</p>
+            <span className="inline-block bg-green-500 text-white text-sm font-bold px-3 py-1.5 rounded-lg">
               {rec.main_pattern}
             </span>
           </div>
