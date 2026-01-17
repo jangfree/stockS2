@@ -222,15 +222,13 @@ function LongTermRecommendationCard({
           </a>
         </div>
 
-        {/* 가격 정보 - 레벨 5만 표시 */}
-        {canDelete && (
+        {/* 가격 정보 - 레벨 5만 표시 (현재가가 있는 경우만) */}
+        {canDelete && rec.current_price !== null && rec.current_price > 0 && (
           <div className="space-y-2 mb-4 text-sm border-b border-gray-100 pb-4">
-            {rec.current_price !== null && (
-              <div className="flex justify-between">
-                <span className="text-gray-500">현재가</span>
-                <span className="font-medium text-gray-900">{formatNumber(rec.current_price)}원</span>
-              </div>
-            )}
+            <div className="flex justify-between">
+              <span className="text-gray-500">현재가</span>
+              <span className="font-medium text-gray-900">{formatNumber(rec.current_price)}원</span>
+            </div>
             {rec.change_rate !== null && (
               <div className="flex justify-between">
                 <span className="text-gray-500">등락률</span>
@@ -239,7 +237,7 @@ function LongTermRecommendationCard({
                 </span>
               </div>
             )}
-            {rec.change_amount !== null && (
+            {rec.change_amount !== null && rec.change_amount !== 0 && (
               <div className="flex justify-between">
                 <span className="text-gray-500">전일대비</span>
                 <span className={getPriceChangeColor(rec.change_amount)}>
@@ -247,13 +245,13 @@ function LongTermRecommendationCard({
                 </span>
               </div>
             )}
-            {rec.volume !== null && (
+            {rec.volume !== null && rec.volume > 0 && (
               <div className="flex justify-between">
                 <span className="text-gray-500">거래량</span>
                 <span className="font-medium text-gray-900">{formatNumber(rec.volume)}</span>
               </div>
             )}
-            {rec.trading_value !== null && (
+            {rec.trading_value !== null && rec.trading_value > 0 && (
               <div className="flex justify-between">
                 <span className="text-gray-500">거래대금</span>
                 <span className="font-medium text-gray-900">{formatNumber(Math.floor(rec.trading_value / 100000000))}억</span>

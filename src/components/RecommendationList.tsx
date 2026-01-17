@@ -217,15 +217,13 @@ function RecommendationCard({
           </a>
         </div>
 
-        {/* 가격 정보 - 레벨 5만 표시 */}
-        {canDelete && (
+        {/* 가격 정보 - 레벨 5만 표시 (현재가가 있는 경우만) */}
+        {canDelete && rec.current_price !== null && rec.current_price > 0 && (
           <div className="space-y-2 mb-4 text-sm border-b border-gray-100 pb-4">
-            {rec.current_price !== null && (
-              <div className="flex justify-between">
-                <span className="text-gray-500">현재가</span>
-                <span className="font-medium text-gray-900">{formatNumber(rec.current_price)}원</span>
-              </div>
-            )}
+            <div className="flex justify-between">
+              <span className="text-gray-500">현재가</span>
+              <span className="font-medium text-gray-900">{formatNumber(rec.current_price)}원</span>
+            </div>
             {rec.change_rate !== null && (
               <div className="flex justify-between">
                 <span className="text-gray-500">등락률</span>
@@ -234,7 +232,7 @@ function RecommendationCard({
                 </span>
               </div>
             )}
-            {rec.change_amount !== null && (
+            {rec.change_amount !== null && rec.change_amount !== 0 && (
               <div className="flex justify-between">
                 <span className="text-gray-500">전일대비</span>
                 <span className={getPriceChangeColor(rec.change_amount)}>
@@ -242,19 +240,19 @@ function RecommendationCard({
                 </span>
               </div>
             )}
-            {rec.volume !== null && (
+            {rec.volume !== null && rec.volume > 0 && (
               <div className="flex justify-between">
                 <span className="text-gray-500">거래량</span>
                 <span className="font-medium text-gray-900">{formatNumber(rec.volume)}</span>
               </div>
             )}
-            {rec.trading_value !== null && (
+            {rec.trading_value !== null && rec.trading_value > 0 && (
               <div className="flex justify-between">
                 <span className="text-gray-500">거래대금</span>
                 <span className="font-medium text-gray-900">{formatNumber(Math.floor(rec.trading_value / 100000000))}억</span>
               </div>
             )}
-            {rec.volume_rank !== null && (
+            {rec.volume_rank !== null && rec.volume_rank > 0 && (
               <div className="flex justify-between">
                 <span className="text-gray-500">거래량순위</span>
                 <span className="font-medium text-gray-900">{rec.volume_rank}위</span>
@@ -269,6 +267,54 @@ function RecommendationCard({
             <span className="inline-block bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">
               {rec.theme_name}
             </span>
+          </div>
+        )}
+
+        {/* 추가 정보 - 레벨 5만 표시 */}
+        {canDelete && (
+          <div className="space-y-2 mb-4 text-sm">
+            {rec.recommendation_status && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">추천상태</span>
+                <span className="font-medium text-purple-600">{rec.recommendation_status}</span>
+              </div>
+            )}
+            {rec.detected_patterns && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">감지패턴</span>
+                <span className="font-medium text-gray-900 text-right max-w-[60%]">{rec.detected_patterns}</span>
+              </div>
+            )}
+            {rec.pattern_strength && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">패턴강도</span>
+                <span className={`font-medium ${
+                  rec.pattern_strength === 'HIGH' ? 'text-red-600' :
+                  rec.pattern_strength === 'MEDIUM' ? 'text-yellow-600' :
+                  'text-green-600'
+                }`}>{rec.pattern_strength}</span>
+              </div>
+            )}
+            {rec.first_recommendation_time && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">최초추천시간</span>
+                <span className="font-medium text-gray-900">{formatDateTime(rec.first_recommendation_time)}</span>
+              </div>
+            )}
+            {rec.surge_date && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">급등일자</span>
+                <span className="font-medium text-orange-600">{rec.surge_date}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 추천사유 - 레벨 5만 표시 */}
+        {canDelete && rec.recommendation_reason && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+            <p className="text-xs text-gray-500 mb-1">추천사유</p>
+            <p className="text-sm text-gray-700 whitespace-pre-line">{rec.recommendation_reason}</p>
           </div>
         )}
 

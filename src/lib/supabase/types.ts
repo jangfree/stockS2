@@ -26,6 +26,12 @@ export interface Database {
           trading_value: number | null
           volume_rank: number | null
           theme_name: string | null
+          recommendation_status: string | null
+          detected_patterns: string | null
+          pattern_strength: string | null
+          first_recommendation_time: string | null
+          surge_date: string | null
+          recommendation_reason: string | null
           is_active: boolean
           created_at: string
           cancelled_at: string | null
@@ -43,6 +49,12 @@ export interface Database {
           trading_value?: number | null
           volume_rank?: number | null
           theme_name?: string | null
+          recommendation_status?: string | null
+          detected_patterns?: string | null
+          pattern_strength?: string | null
+          first_recommendation_time?: string | null
+          surge_date?: string | null
+          recommendation_reason?: string | null
           is_active?: boolean
           created_at?: string
           cancelled_at?: string | null
@@ -60,6 +72,12 @@ export interface Database {
           trading_value?: number | null
           volume_rank?: number | null
           theme_name?: string | null
+          recommendation_status?: string | null
+          detected_patterns?: string | null
+          pattern_strength?: string | null
+          first_recommendation_time?: string | null
+          surge_date?: string | null
+          recommendation_reason?: string | null
           is_active?: boolean
           created_at?: string
           cancelled_at?: string | null
