@@ -147,6 +147,15 @@ function LongTermRecommendationCard({
 }) {
   const [showCancelModal, setShowCancelModal] = useState(false)
 
+  // 추천일자 포맷팅 (YYYYMMDD -> YYYY.MM.DD)
+  const formatRecommendationDate = (dateStr: string | null) => {
+    if (!dateStr) return null
+    if (dateStr.length === 8) {
+      return `${dateStr.substring(0, 4)}.${dateStr.substring(4, 6)}.${dateStr.substring(6, 8)}`
+    }
+    return dateStr
+  }
+
   // 리스크 레벨에 따른 색상
   const getRiskColor = (risk: string | null) => {
     switch (risk?.toUpperCase()) {
@@ -192,20 +201,20 @@ function LongTermRecommendationCard({
           </button>
         )}
 
-        {/* 추천일자 - 상단에 눈에 띄게 표시 */}
-        {rec.recommendation_date && (
-          <div className="mb-3 -mt-2">
-            <span className="inline-block bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full">
-              {rec.recommendation_date}
-            </span>
-          </div>
-        )}
-
         {/* 종목명 및 코드 */}
         <div className="mb-4 pr-8">
           <h3 className="text-xl font-bold text-gray-900">{rec.stock_name}</h3>
           <p className="text-sm text-gray-500">{rec.stock_code}</p>
         </div>
+
+        {/* 추천일자 - 종목명 바로 아래에 눈에 띄게 표시 */}
+        {rec.recommendation_date && (
+          <div className="mb-4">
+            <span className="inline-block bg-blue-600 text-white text-base font-bold px-4 py-2 rounded-lg shadow">
+              추천일자: {formatRecommendationDate(rec.recommendation_date)}
+            </span>
+          </div>
+        )}
 
         {/* 네이버주식 링크 */}
         <div className="mb-4">
