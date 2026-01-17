@@ -70,6 +70,7 @@ export interface Database {
         Row: {
           id: number
           recommendation_time: string
+          recommendation_date: string | null
           stock_code: string
           stock_name: string
           current_price: number | null
@@ -91,6 +92,7 @@ export interface Database {
         Insert: {
           id?: never
           recommendation_time: string
+          recommendation_date?: string | null
           stock_code: string
           stock_name: string
           current_price?: number | null
@@ -112,6 +114,7 @@ export interface Database {
         Update: {
           id?: number
           recommendation_time?: string
+          recommendation_date?: string | null
           stock_code?: string
           stock_name?: string
           current_price?: number | null
