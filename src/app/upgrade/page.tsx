@@ -9,7 +9,7 @@ import Header from '@/components/Header'
 export default function UpgradePage() {
   // 등급별 정보
   const levels = [
-    { level: 1, name: '1단계', price: '100,000', benefits: '단타 + 중장기 추천' },
+    { level: 1, name: '1단계', price: '100,000', benefits: '단타 + 중기 추천' },
     { level: 2, name: '2단계', price: '200,000', benefits: '+ 프리미엄 분석' },
     { level: 3, name: '3단계', price: '300,000', benefits: '+ VIP 리포트' },
     { level: 4, name: '4단계', price: '400,000', benefits: '+ 1:1 상담' },

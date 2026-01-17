@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext'
 // 메뉴 구조 정의 (향후 확장 가능)
 const menuItems = [
   { name: '오늘의 단타 종목', path: '/today', requiredLevel: 1 },
-  { name: '중장기 종목추천', path: '/long-term', requiredLevel: 1 },
+  { name: '중기 종목추천', path: '/long-term', requiredLevel: 1 },
 ]
 
 export default function Header() {

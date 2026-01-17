@@ -1,5 +1,5 @@
 /**
- * 중장기 추천 목록 컴포넌트 (Client Component)
+ * 중기 추천 목록 컴포넌트 (Client Component)
  * Realtime 구독으로 실시간 업데이트 처리
  */
 
@@ -134,7 +134,7 @@ export default function LongTermRecommendationList({ initialData }: Props) {
 }
 
 /**
- * 개별 중장기 추천 카드 컴포넌트
+ * 개별 중기 추천 카드 컴포넌트
  */
 function LongTermRecommendationCard({
   recommendation: rec,
@@ -213,34 +213,36 @@ function LongTermRecommendationCard({
           </a>
         </div>
 
-        {/* 추천 정보 */}
-        <div className="space-y-2 mb-4 text-sm">
-          {rec.recommendation_strength !== null && (
-            <div className="flex justify-between">
-              <span className="text-gray-500">추천강도</span>
-              <span className="font-medium text-blue-600">{rec.recommendation_strength}</span>
-            </div>
-          )}
-          {rec.expected_return !== null && (
-            <div className="flex justify-between">
-              <span className="text-gray-500">예상수익률</span>
-              <span className={`font-medium ${rec.expected_return > 0 ? 'text-red-600' : 'text-blue-600'}`}>
-                {rec.expected_return > 0 ? '+' : ''}{rec.expected_return}%
-              </span>
-            </div>
-          )}
-          {rec.risk_level && (
-            <div className="flex justify-between items-center">
-              <span className="text-gray-500">리스크</span>
-              <span className={`px-2 py-0.5 text-xs rounded-full ${getRiskColor(rec.risk_level)}`}>
-                {getRiskLabel(rec.risk_level)}
-              </span>
-            </div>
-          )}
-        </div>
+        {/* 추천 정보 - 레벨 5만 표시 */}
+        {canDelete && (
+          <div className="space-y-2 mb-4 text-sm">
+            {rec.recommendation_strength !== null && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">추천강도</span>
+                <span className="font-medium text-blue-600">{rec.recommendation_strength}</span>
+              </div>
+            )}
+            {rec.expected_return !== null && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">예상수익률</span>
+                <span className={`font-medium ${rec.expected_return > 0 ? 'text-red-600' : 'text-blue-600'}`}>
+                  {rec.expected_return > 0 ? '+' : ''}{rec.expected_return}%
+                </span>
+              </div>
+            )}
+            {rec.risk_level && (
+              <div className="flex justify-between items-center">
+                <span className="text-gray-500">리스크</span>
+                <span className={`px-2 py-0.5 text-xs rounded-full ${getRiskColor(rec.risk_level)}`}>
+                  {getRiskLabel(rec.risk_level)}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
-        {/* 주요 패턴 */}
-        {rec.main_pattern && (
+        {/* 주요 패턴 - 레벨 5만 표시 */}
+        {canDelete && rec.main_pattern && (
           <div className="mb-4">
             <span className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
               {rec.main_pattern}

@@ -45,12 +45,9 @@ export default async function TodayPage() {
         <div className="container mx-auto py-8 px-4">
           {/* 페이지 타이틀 */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold text-gray-900">
               오늘의 단타 종목
             </h1>
-            <p className="text-gray-600">
-              데스크톱 앱에서 전송된 오늘의 추천 종목을 실시간으로 확인하세요
-            </p>
           </div>
 
           {/* 추천 목록 (Client Component) */}
