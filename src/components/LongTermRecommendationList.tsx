@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { LongTermRecommendationRow } from '@/lib/supabase/types'
 import { formatDateTime } from '@/lib/utils'
+import { useAuth } from '@/contexts/AuthContext'
 import LongTermCancelModal from './LongTermCancelModal'
 
 interface Props {
@@ -18,6 +19,8 @@ interface Props {
 export default function LongTermRecommendationList({ initialData }: Props) {
   const [recommendations, setRecommendations] = useState<LongTermRecommendationRow[]>(initialData)
   const [isConnected, setIsConnected] = useState(false)
+  const { user } = useAuth()
+  const canDelete = user?.membership_level === 5
 
   useEffect(() => {
     const supabase = createClient()
@@ -118,6 +121,7 @@ export default function LongTermRecommendationList({ initialData }: Props) {
             <LongTermRecommendationCard
               key={rec.id}
               recommendation={rec}
+              canDelete={canDelete}
               onCancelSuccess={(cancelledId) => {
                 setRecommendations((prev) => prev.filter((r) => r.id !== cancelledId))
               }}
@@ -134,9 +138,11 @@ export default function LongTermRecommendationList({ initialData }: Props) {
  */
 function LongTermRecommendationCard({
   recommendation: rec,
+  canDelete,
   onCancelSuccess,
 }: {
   recommendation: LongTermRecommendationRow
+  canDelete: boolean
   onCancelSuccess: (cancelledId: number) => void
 }) {
   const [showCancelModal, setShowCancelModal] = useState(false)
@@ -164,25 +170,27 @@ function LongTermRecommendationCard({
   return (
     <>
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 relative">
-        {/* 취소 버튼 */}
-        <button
-          onClick={() => setShowCancelModal(true)}
-          className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors"
-          title="추천 취소"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+        {/* 취소 버튼 - 레벨 5만 표시 */}
+        {canDelete && (
+          <button
+            onClick={() => setShowCancelModal(true)}
+            className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors"
+            title="추천 취소"
           >
-            <path
-              fillRule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        )}
 
         {/* 종목명 및 코드 */}
         <div className="mb-4 pr-8">
@@ -248,8 +256,8 @@ function LongTermRecommendationCard({
         </div>
       </div>
 
-      {/* 취소 모달 */}
-      {showCancelModal && (
+      {/* 취소 모달 - 레벨 5만 표시 */}
+      {canDelete && showCancelModal && (
         <LongTermCancelModal
           recommendation={rec}
           onClose={() => setShowCancelModal(false)}

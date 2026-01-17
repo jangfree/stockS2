@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { RecommendationRow } from '@/lib/supabase/types'
 import { formatDateTime, formatNumber, formatRate, getPriceChangeColor } from '@/lib/utils'
+import { useAuth } from '@/contexts/AuthContext'
 import CancelModal from './CancelModal'
 
 interface Props {
@@ -35,6 +36,8 @@ function isTodayKST(dateString: string | null): boolean {
 export default function RecommendationList({ initialData }: Props) {
   const [recommendations, setRecommendations] = useState<RecommendationRow[]>(initialData)
   const [isConnected, setIsConnected] = useState(false)
+  const { user } = useAuth()
+  const canDelete = user?.membership_level === 5
 
   useEffect(() => {
     const supabase = createClient()
@@ -140,6 +143,7 @@ export default function RecommendationList({ initialData }: Props) {
             <RecommendationCard
               key={rec.id}
               recommendation={rec}
+              canDelete={canDelete}
               onCancelSuccess={(cancelledId) => {
                 // 취소 성공 시 로컬 상태에서 즉시 제거 (Realtime보다 빠른 UX)
                 setRecommendations((prev) => prev.filter((r) => r.id !== cancelledId))
@@ -157,9 +161,11 @@ export default function RecommendationList({ initialData }: Props) {
  */
 function RecommendationCard({
   recommendation: rec,
+  canDelete,
   onCancelSuccess,
 }: {
   recommendation: RecommendationRow
+  canDelete: boolean
   onCancelSuccess: (cancelledId: number) => void
 }) {
   const priceChangeColor = getPriceChangeColor(rec.change_rate || 0)
@@ -168,25 +174,27 @@ function RecommendationCard({
   return (
     <>
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 relative">
-        {/* 취소 버튼 */}
-        <button
-          onClick={() => setShowCancelModal(true)}
-          className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors"
-          title="추천 취소"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+        {/* 취소 버튼 - 레벨 5만 표시 */}
+        {canDelete && (
+          <button
+            onClick={() => setShowCancelModal(true)}
+            className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors"
+            title="추천 취소"
           >
-            <path
-              fillRule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        )}
 
         {/* 종목명 및 코드 */}
         <div className="mb-4 pr-8">
@@ -226,8 +234,8 @@ function RecommendationCard({
         </div>
       </div>
 
-      {/* 취소 모달 */}
-      {showCancelModal && (
+      {/* 취소 모달 - 레벨 5만 표시 */}
+      {canDelete && showCancelModal && (
         <CancelModal
           recommendation={rec}
           onClose={() => setShowCancelModal(false)}
