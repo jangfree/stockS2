@@ -217,6 +217,52 @@ function RecommendationCard({
           </a>
         </div>
 
+        {/* 가격 정보 - 레벨 5만 표시 */}
+        {canDelete && (
+          <div className="space-y-2 mb-4 text-sm border-b border-gray-100 pb-4">
+            {rec.current_price !== null && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">현재가</span>
+                <span className="font-medium text-gray-900">{formatNumber(rec.current_price)}원</span>
+              </div>
+            )}
+            {rec.change_rate !== null && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">등락률</span>
+                <span className={getPriceChangeColor(rec.change_rate)}>
+                  {formatRate(rec.change_rate)}
+                </span>
+              </div>
+            )}
+            {rec.change_amount !== null && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">전일대비</span>
+                <span className={getPriceChangeColor(rec.change_amount)}>
+                  {formatNumber(rec.change_amount, true)}원
+                </span>
+              </div>
+            )}
+            {rec.volume !== null && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">거래량</span>
+                <span className="font-medium text-gray-900">{formatNumber(rec.volume)}</span>
+              </div>
+            )}
+            {rec.trading_value !== null && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">거래대금</span>
+                <span className="font-medium text-gray-900">{formatNumber(Math.floor(rec.trading_value / 100000000))}억</span>
+              </div>
+            )}
+            {rec.volume_rank !== null && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">거래량순위</span>
+                <span className="font-medium text-gray-900">{rec.volume_rank}위</span>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* 테마 */}
         {rec.theme_name && (
           <div className="mb-4">
