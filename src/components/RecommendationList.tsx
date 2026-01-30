@@ -295,12 +295,6 @@ function RecommendationCard({
                 }`}>{rec.pattern_strength}</span>
               </div>
             )}
-            {rec.first_recommendation_time && (
-              <div className="flex justify-between items-center">
-                <span className="text-gray-700 font-medium">최초추천시간</span>
-                <span className="font-bold text-gray-900">{formatDateTime(rec.first_recommendation_time)}</span>
-              </div>
-            )}
             {rec.surge_date && (
               <div className="flex justify-between items-center">
                 <span className="text-gray-700 font-medium">급등일자</span>
