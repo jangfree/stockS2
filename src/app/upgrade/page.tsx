@@ -5,6 +5,7 @@
 
 import Link from 'next/link'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 export default function UpgradePage() {
   // 등급별 정보
@@ -150,13 +151,7 @@ export default function UpgradePage() {
         </div>
       </div>
 
-      {/* 푸터 */}
-      <footer className="bg-gray-900 text-gray-400 py-8 mt-12">
-        <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2026 실시간 종목 추천 서비스. All rights reserved.</p>
-          <p className="text-sm mt-2">투자에 대한 책임은 본인에게 있습니다.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

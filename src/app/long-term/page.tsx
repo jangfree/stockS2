@@ -7,6 +7,7 @@
 import { createClient } from '@/lib/supabase/server'
 import LongTermRecommendationList from '@/components/LongTermRecommendationList'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import AccessControl from '@/components/AccessControl'
 
 export const dynamic = 'force-dynamic'
@@ -49,6 +50,8 @@ export default async function LongTermPage() {
           <LongTermRecommendationList initialData={initialRecommendations || []} />
         </div>
       </AccessControl>
+
+      <Footer />
     </div>
   )
 }

@@ -24,6 +24,8 @@ export default function RegisterPage() {
     referrer_id: '',
     referral_source: ''
   })
+  const [agreeTerms, setAgreeTerms] = useState(false)
+  const [agreeAge, setAgreeAge] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [referralSources, setReferralSources] = useState<ReferralSource[]>([])
@@ -120,16 +122,26 @@ export default function RegisterPage() {
       newErrors.gender = '성별을 선택해주세요.'
     }
 
-    // 출생년도 검증
+    // 출생년도 검증 (만 18세 이상)
     const birthYear = parseInt(formData.birth_year)
     const currentYear = new Date().getFullYear()
-    if (isNaN(birthYear) || birthYear < 1940 || birthYear > currentYear - 14) {
-      newErrors.birth_year = '올바른 출생년도를 입력해주세요. (만 14세 이상)'
+    if (isNaN(birthYear) || birthYear < 1940 || birthYear > currentYear - 18) {
+      newErrors.birth_year = '올바른 출생년도를 입력해주세요. (만 18세 이상만 가입 가능)'
     }
 
     // 유입경로 검증
     if (!formData.referral_source) {
       newErrors.referral_source = '유입경로를 선택해주세요.'
+    }
+
+    // 만 18세 이상 확인
+    if (!agreeAge) {
+      newErrors.agreeAge = '만 18세 이상임을 확인해주세요.'
+    }
+
+    // 이용약관 동의 확인
+    if (!agreeTerms) {
+      newErrors.agreeTerms = '이용약관 및 개인정보처리방침에 동의해주세요.'
     }
 
     setErrors(newErrors)
@@ -387,7 +399,7 @@ export default function RegisterPage() {
                   type="number"
                   required
                   min="1940"
-                  max={new Date().getFullYear() - 14}
+                  max={new Date().getFullYear() - 18}
                   value={formData.birth_year}
                   onChange={handleChange}
                   className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
@@ -450,6 +462,53 @@ export default function RegisterPage() {
               </div>
               {errors.referrer_id && (
                 <p className="mt-1 text-sm text-red-600">{errors.referrer_id}</p>
+              )}
+            </div>
+
+            {/* 만 18세 이상 확인 */}
+            <div className="bg-orange-50 border border-orange-200 rounded-md p-4">
+              <label className="flex items-start space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreeAge}
+                  onChange={(e) => {
+                    setAgreeAge(e.target.checked)
+                    if (errors.agreeAge) setErrors(prev => ({ ...prev, agreeAge: '' }))
+                  }}
+                  className="form-checkbox h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0"
+                />
+                <span className="text-sm text-gray-700">
+                  본인은 <strong className="text-orange-700">만 18세 이상</strong>임을 확인합니다.
+                  <span className="text-red-500 ml-1">*</span>
+                </span>
+              </label>
+              {errors.agreeAge && (
+                <p className="mt-1 ml-8 text-sm text-red-600">{errors.agreeAge}</p>
+              )}
+            </div>
+
+            {/* 이용약관 및 개인정보처리방침 동의 */}
+            <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+              <label className="flex items-start space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={agreeTerms}
+                  onChange={(e) => {
+                    setAgreeTerms(e.target.checked)
+                    if (errors.agreeTerms) setErrors(prev => ({ ...prev, agreeTerms: '' }))
+                  }}
+                  className="form-checkbox h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0"
+                />
+                <span className="text-sm text-gray-700">
+                  <Link href="/terms" target="_blank" className="text-blue-600 hover:underline font-medium">이용약관</Link>
+                  {' '}및{' '}
+                  <Link href="/privacy" target="_blank" className="text-blue-600 hover:underline font-medium">개인정보처리방침</Link>
+                  에 동의합니다.
+                  <span className="text-red-500 ml-1">*</span>
+                </span>
+              </label>
+              {errors.agreeTerms && (
+                <p className="mt-1 ml-8 text-sm text-red-600">{errors.agreeTerms}</p>
               )}
             </div>
 

@@ -7,6 +7,7 @@
 import { createClient } from '@/lib/supabase/server'
 import RecommendationList from '@/components/RecommendationList'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import AccessControl from '@/components/AccessControl'
 
 export const dynamic = 'force-dynamic'
@@ -54,6 +55,8 @@ export default async function TodayPage() {
           <RecommendationList initialData={initialRecommendations || []} />
         </div>
       </AccessControl>
+
+      <Footer />
     </div>
   )
 }
